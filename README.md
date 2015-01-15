@@ -16,6 +16,7 @@ To run it you will need to specifiy a bunch of environment variables:
 
 ```
 DATABASE_URL=postgresql://root:12345@127.0.0.1/yeahnah \
+REDIS_URL=redis://127.0.0.1:6379 \
 MOVIEDB_API_KEY=************ \
 AMAZON_ID=************ \
 AMAZON_SECRET=************ \

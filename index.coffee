@@ -10,7 +10,7 @@ AmazonHelper = require('apac').OperationHelper;
 request = require 'request'
 
 process.env.DATABASE_URL = process.env.DATABASE_URL
-process.env.REDIS_URL = process.env.REDISCLOUD_URL
+process.env.REDIS_URL = process.env.REDIS_URL
 
 red = require("url").parse(process.env.REDIS_URL)
 cache_config  = { engine: require('catbox-redis')}
