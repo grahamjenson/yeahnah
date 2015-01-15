@@ -1,0 +1,40 @@
+{
+  "name": "yeahnah",
+  "version": "0.0.1",
+  "description": "Movie Recommendation Site using GER, Hapi.js and The MovieDB",
+  "url": "https://github.com/grahamjenson/yeahnah",
+  "main": "index.coffee",
+  "keywords": [
+    "ger"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grahamjenson/yeahnah"
+  },
+  "author": {
+    "name": "Graham Jenson",
+    "email": "grahamjenson@maori.geek.nz",
+    "url": "http://www.maori.geek.nz/"
+  },
+  "license": "MIT",
+  "dependencies"  : {
+    "bluebird": "2.3.4",
+    "underscore": "1.7.0",
+    "ger": "0.0.62",
+    "hapi" : "7.5.2",
+    "catbox": "4.2.0",
+    "catbox-redis": "1.0.4",
+    "yar": "2.4.0",
+    "apac": "1.0.0",
+    "moviedb": "0.1.9",
+    "coffee-script": "1.7.1",
+    "request": "2.51.0",
+    "joi" : "5.0.2",
+    "bell": "1.3.1"
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+    "test": "mocha"
+  }
+}

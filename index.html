@@ -1,0 +1,846 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Yeah, Nah Movie Recommendations</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=.6, minimum-scale=.6, maximum-scale=.6, minimal-ui" />
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.3.15/slick.css" rel="stylesheet">
+
+  <script src='https://code.jquery.com/jquery-2.1.1.js'></script>
+  <script src='https://code.jquery.com/ui/1.11.2/jquery-ui.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js'></script>
+
+  
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.3.15/slick.js'></script>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-route.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.7.1/coffee-script.min.js"></script>
+
+  
+  <style>
+    /* APP */
+    html, body {margin:0;padding:0;height:100%;}
+    body {
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    /* MINI TITLES */
+    .mega-top {
+      z-index: 2000;
+    }
+
+    .liked-saved {
+      color: rgb(255, 255, 255);
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      display: none;
+      z-index: 1900;
+      background-color: rgba(255, 255, 255 , .8);
+    }
+    
+    .mini_box {
+      padding: 17px 30px 0px 30px;
+      width: 80%;
+      height: 100%;
+      margin-left: 10%;
+      background-color: rgba(0, 0, 0 , .8);
+    }
+
+    .mini_movie {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .mini_links {
+      margin-top: 5px;
+      width: 30px;
+      position: absolute;
+      bottom: 0px;
+      right: 0px;
+      margin-left: 5px;
+      margin-bottom: 5px;
+    }
+    .mini_link {
+      height: 30px;
+      width: 30px;
+      display: inline-block;
+    }
+    .mini_title {
+      top: 0px;
+      width: 100%;
+      text-align: center;
+
+      position: absolute;
+      background-color: rgba(0,0,0,.8)
+    }
+    .mini_poster_image {
+      width: 100%;
+    }
+    /* FULL */
+
+    .movie {
+      position: relative;
+      opacity: 0;
+      transition: opacity 0.5s linear;
+      -webkit-transition: opacity 0.5s linear;
+    }
+
+    .movie:first-child {
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+      transition-delay:0s;
+    }
+
+    .fullscreen {
+      overflow: hidden;
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0px;
+      left: 0px;
+    }
+
+    /* INFO */
+
+    .info {
+      max-height: 281px;
+      position: absolute;
+      bottom: 5%;
+      left: 0px;
+      z-index: 100;
+      width: 97%;
+      background: linear-gradient(to right, rgba(0, 0, 0, 0) 35%, rgba(50, 50, 50, .9) 45%, rgba(50, 50, 50, .9) 70%, rgba(0, 0, 0, 0) 99%);
+      color: rgb(255, 255, 255);
+    }
+
+    .title {
+      display: block;
+      font-size: 28px;
+      font-weight: normal;
+      height: 37px;
+      line-height: 33.5400009155273px;
+      text-rendering: optimizelegibility;
+      text-shadow: rgb(57, 57, 57) 1px 1px 1px;
+      display: inline-block;
+    }
+
+    .year {
+      display: inline-block;
+      font-size: 1.5em
+    }
+
+    .rating {
+      display: inline-block;
+      float: right;
+      margin: 10px;
+    }
+    .links {
+      margin-top: 5px
+    }
+    .link {
+      height: 48px;
+      width: 48px;
+    }
+
+    .poster {
+      position: absolute;
+      left: 85%;
+      display: inline-block;
+      bottom: -14px;
+      transform: perspective( 750px ) rotateY(-30deg);
+      -webkit-transform: perspective( 750px ) rotateY(-30deg);
+    }
+
+    .overview {
+      overflow: hidden;
+      max-height: 281px;
+      position: relative;
+      width: 40%;
+      left: 45%;
+      font-size: 13px;
+      line-height: 19px;
+    }
+    .description {
+      margin: 5px 0px 10px 7px;
+    }
+
+    .poster_image {
+      height: 300px;
+    }
+
+    /* TRAILER BACKDROP*/
+    .trailer_image, .trailer_video {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      min-height : 100%;
+      min-width : 100%
+
+    }
+
+    .play_btn {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      text-shadow: 0 0 10px #000;
+      font-size: 2em;
+      margin: -50px 0px 0px -50px;
+      cursor: pointer;
+    }
+    .play_btn:hover {
+      text-shadow: 0 0 20px #000;
+    }
+
+    .overlay {
+      position: absolute;
+      z-index: 90;
+      width: 100%;
+      height: 92%;
+    }
+
+    .trailer_video {
+      z-index: 10;
+    }
+
+    .play_button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 99;
+    }
+
+    .trailer {
+      overflow: hidden;
+    }
+
+    /* MESSAGE */
+    .fullmessage {
+      z-index: 10000
+    }
+
+    .message{
+      width:600px;
+      padding: 10px 80px 10px 80px;
+      position:absolute;
+      left:50%;
+      top:50%;
+      margin:-240px 0 0 -340px;
+      background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(50, 50, 50, .9) 10%, rgba(50, 50, 50, .9) 90%, rgba(0, 0, 0, 0) 100%);
+      font-size: 18px;
+      font-weight: normal;
+      text-rendering: optimizelegibility;
+      text-shadow: rgb(57, 57, 57) 1px 1px 1px;
+      text-align: center;
+      color: white;
+    }
+
+    /* OVERLAY */
+
+    .top {
+      z-index: 1000
+    }
+
+    .rate_btn {
+      font-size: 3em;
+      opacity: .7;
+      cursor: pointer;
+    }
+
+    .action_btns {
+      position: absolute;
+      left: 50%;
+      top: 0%;
+      margin-left: -150px
+    }
+
+    .like_btn {
+      position: absolute;
+      left: 0%;
+      top: 50%;
+    }
+
+    .hate_btn {
+      position: absolute;
+      right: 0%;
+      top: 50%;
+    }
+
+    a:link, a:visited, a:hover, a:active {
+      text-decoration: none;
+    }
+
+    .powered_by, .powered_by a:link, .powered_by a:visited, .powered_by a:hover, .powered_by a:active { 
+      margin: 10px;
+      position: absolute;
+      top: 0%;
+      right: 0%;
+      color: rgb(255, 255, 255);
+      font-size: .65em;
+      text-align: center;
+      color: rgb(255, 255, 255);
+      text-shadow: 0 0 2px #000; /* horizontal-offset vertical-offset 'blur' colour */
+      -moz-text-shadow: 0 0 2px #000;
+      -webkit-text-shadow: 0 0 2px #000;
+
+      font-weight: normal;
+      text-rendering: optimizelegibility;
+    }
+
+    .close_message {
+
+    }
+
+    .button {
+      margin-top: 5px;
+      margin-bottom: 5px;
+      color: #fff;
+      background-color: #5cb85c;
+      border-color: #4cae4c;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      font-size: 3em;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .button:hover {
+      color: #fff;
+      background-color: #449d44;
+      border-color: #398439;
+    }
+
+    .feedback {
+      position: absolute;
+      width: 110px;
+      height: 40px;
+      top: 160px;
+      right: -40px;
+      -webkit-transform: rotate(-90deg);
+      transform: rotate(-90deg);
+      font-size: .5em
+    }
+
+    .loading {
+      font-size: 2em;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+
+    }
+
+    .sign_in_with_twitter {
+      position: absolute;
+      top: 0%;
+      left: 0%;
+      margin: 10px;
+    }
+  </style>   
+</head> 
+<body>
+
+<a class='sign_in_with_twitter top signin' href='/sign_in_with_twitter'>
+<img src='https://g.twimg.com/dev/sites/default/files/images_documentation/sign-in-with-twitter-gray.png'/>
+</a>
+
+<div class='fullmessage fullscreen'>
+  <div style='width:100%;height:100%;background-color: rgba(255, 255, 255, .4);'>
+  </div>
+  <div class='message'>
+    <h2>
+    Welcome to <b>Yeah, Nah</b> Movie Recommender
+    </h2>
+
+    Like movies with <i class='fa fa-thumbs-up'></i>
+    <br/>
+    Dislike movies with <i class='fa fa-thumbs-down'></i>
+    <br/>
+    You can <b>save</b> movies you want to see later
+    <br/>
+    Movies you don't care about are just <b>meh!</b>
+    <br/>
+
+    As you rate movies, the movies poping up will become more and more customized just for you :)
+
+    Log in with Twitter to Save your Ratings
+
+    <br/>
+    <br/>
+    <div style='font-size: .8em;'>
+    Please show support by purchasing movies through the links below
+    </div>
+    <div class='close_message button'>
+      START
+    </div>
+  </div>
+</div>
+
+<i class="loading fa fa-spinner fa-spin fa-5x"></i>
+
+<div class='rate_btn like_btn top fa-stack fa-lg'>
+  <i class="fa fa-circle fa-stack-2x"></i>
+  <i class='fa fa-stack-1x fa-thumbs-up fa-inverse'></i>
+</div>
+
+<div class='rate_btn hate_btn top fa-stack fa-lg'>
+  <i class="fa fa-circle fa-stack-2x"></i>
+  <i class='fa fa-stack-1x fa-thumbs-down fa-inverse'></i>
+</div>
+
+<div class='action_btns'>
+  <div class='rate_btn open_btn mega-top fa-stack fa-lg'>
+    <i class="fa fa-circle fa-stack-2x"></i>
+    <i class='fa fa-stack-1x fa-folder-open fa-inverse'></i>
+  </div>
+
+  <div class='rate_btn save_btn top fa-stack fa-lg'>
+    <i class="fa fa-circle fa-stack-2x"></i>
+    <div class="fa fa-inverse fa-stack-1x" style='font-size: .6em; margin-top: -2px;'>save</div>
+  </div>
+
+  <div class='rate_btn duno_btn top fa-stack fa-lg'>
+    <i class="fa fa-circle fa-stack-2x"></i>
+    <div class="fa fa-inverse fa-stack-1x" style='font-size: .6em; margin-top: -2px;'>meh!</div>
+  </div>
+</div>
+
+<div class='powered_by top'>
+  <a color="red" class='ger_link' href='https://github.com/grahamjenson/ger' target="_blank">
+  <img src="https://raw.githubusercontent.com/grahamjenson/ger/master/assets/ger70x70.png">
+  <br/>
+  powered by </br> GER
+  </a>
+
+
+
+</div>
+
+<div class='feedback top'>
+  <a class="button" href="https://docs.google.com/forms/d/17B5_Mx7ZUpSPhcXxTWG--dOrzosyWkgaIi2xeHCyuS0/viewform?usp=send_form" target="_blank">
+    feedback
+  </a>
+</div>
+
+<div ng-controller="casting_call">
+
+
+  <div class='fullscreen liked-saved mega-top'>
+   <div class="mini_box">
+    <h1>
+      SAVED
+    </h1>
+    <slick init-onload='true' data="saved" infinite="true" slides-to-show="6" slides-to-scroll="6" style='width:100%'>
+      <div class="mini_movie " ng-repeat="movie in saved">
+        
+          <a href='{{movie.amazon_url}}' target="_blank">
+            <div class='mini_title' style="color: rgb(255, 255, 255)">
+              {{movie.title}} ({{movie.release_date}})
+            </div>
+          </a>
+        
+
+        <div class='mini_links'>
+          <a class='amazon_link' href='{{movie.amazon_url}}' ng-show="movie.amazon_url" target="_blank"><img class='mini_link' src="https://s3-ap-southeast-2.amazonaws.com/maorigeek/uploads/amazon.png"></a>
+          <a class='itunes_link' href='{{movie.itunes_url}}' ng-show="movie.itunes_url" target="_blank"><img class='mini_link' src="https://s3-ap-southeast-2.amazonaws.com/maorigeek/uploads/itunes.png"></a>
+          <a class='imdb_link' href='{{movie.imdb_url}}' ng-show="movie.imdb_url" target="_blank"><img class='mini_link' src="https://s3-ap-southeast-2.amazonaws.com/maorigeek/uploads/imdb.png"></a>
+        </div>
+        
+        <a href='{{movie.amazon_url}}' target="_blank">
+          <img class='mini_poster_image' ng-src="{{movie.poster_url}}"/>
+        </a>
+
+      </div>
+    </slick>
+    <hr style="margin-top: -18px; margin-bottom: -17px;">
+    <h1>
+    LIKED
+    </h1>
+    <slick init-onload=true data="liked" infinite="true" slides-to-show="5" slides-to-scroll="5" style='width:100%'>
+      <div class="mini_movie" ng-repeat="movie in liked">
+        
+          <a href='{{movie.amazon_url}}' target="_blank">
+            <div class='mini_title' style="color: rgb(255, 255, 255)">
+                {{movie.title}} ({{movie.release_date}})
+            </div>
+          </a>
+          <div class='mini_links'>
+            <a class='amazon_link' href='{{movie.amazon_url}}' ng-show="movie.amazon_url" target="_blank"><img class='mini_link' src="https://s3-ap-southeast-2.amazonaws.com/maorigeek/uploads/amazon.png"></a>
+            <a class='itunes_link' href='{{movie.itunes_url}}' ng-show="movie.itunes_url" target="_blank"><img class='mini_link' src="https://s3-ap-southeast-2.amazonaws.com/maorigeek/uploads/itunes.png"></a>
+            <a class='imdb_link' href='{{movie.imdb_url}}' ng-show="movie.imdb_url" target="_blank"><img class='mini_link' src="https://s3-ap-southeast-2.amazonaws.com/maorigeek/uploads/imdb.png"></a>
+          </div>
+          
+          
+          <a href='{{movie.amazon_url}}' target="_blank">
+            <img class='mini_poster_image' ng-src="{{movie.poster_url}}"/>
+          </a>
+
+      </div>
+    </slick>
+   </div>
+  </div>
+
+  <div class="fullscreen movie-selector">
+    <div class="movie" id="movie_{{$index}}" data-index="{{$index}}" touch-swipe="touchSwipeHandler" ng-repeat="movie in movies" attach-play-btn>
+
+      <div class='trailer'>
+        <div class='overlay'>
+          <div class='play_btn top'>
+            <i class="fa fa-5x fa-play-circle-o fa-inverse"></i>
+          </div>  
+        </div>
+        <img class='trailer_image' ng-src="{{movie.backdrop_url}}"/>
+        <div class='trailer_video'>
+        </div>
+      
+      </div>
+
+      <div class='info'>
+        <div class='overview'>
+          <div class='header'>
+            <div class='title'>
+              {{movie.title}}
+            </div>
+            <div class='year'>
+              ({{movie.release_date}})
+            </div>
+            <div class="rating">
+              {{movie.rating}}/10
+            </div>
+          </div>
+          <div class='genres'>
+            {{movie.genres.join(" / ")}}
+          </div>
+          <div class='links'>
+            <a class='amazon_link' href='{{movie.amazon_url}}' ng-show="movie.amazon_url" target="_blank"><img class='link' src="https://s3-ap-southeast-2.amazonaws.com/maorigeek/uploads/amazon.png"></a>
+            <a class='itunes_link' href='{{movie.itunes_url}}' ng-show="movie.itunes_url" target="_blank"><img class='link' src="https://s3-ap-southeast-2.amazonaws.com/maorigeek/uploads/itunes.png"></a>
+            <a class='imdb_link' href='{{movie.imdb_url}}' ng-show="movie.imdb_url" target="_blank"><img class='link' src="https://s3-ap-southeast-2.amazonaws.com/maorigeek/uploads/imdb.png"></a>
+          </div>
+          <div class='description'>
+            {{movie.overview}}
+          </div>
+        </div>
+        <div class='poster'>
+          <img class='poster_image' ng-src="{{movie.poster_url}}"/>
+        </div> 
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/coffeescript">
+
+$('.close_message').bind("click touchstart", ->
+  $('.fullmessage').fadeOut(300, -> $(@).remove())
+)
+
+sample = (list) ->
+  v = list[Math.floor(Math.random()*list.length)]
+  v
+
+block = false
+play_trailer = (element, movie) ->
+  return if block
+  return if $(element).find(".trailer_video").find('iframe').length > 0
+  $(element).find('.play_btn').fadeOut(200, -> $(@).remove())
+  height = $(element).find(".trailer_image").height()
+  width = $(element).find(".trailer_image").width()
+  width = Math.min($(document).width(), width)
+  height = Math.min($(document).height(), height)
+  $(element).find(".trailer_video").html(
+    "<iframe width='#{width}' height='#{height}' src='#{movie.trailer_url}?autoplay=1' allowfullscreen frameborder='0'></iframe>")
+
+
+angular.module('swipes', [])
+.directive('touchSwipe', ($compile, $timeout) ->
+  swipeHandler = $compile
+  threshold = 250
+  link = (scope, element, attrs) ->
+    $timeout ->
+      handler = scope.$apply(attrs.touchSwipe)
+      $(element).draggable(
+        axis: "x"
+        revertDuration: 150
+        revert: () ->
+          offset = $(this).data("ui-draggable").position.left
+          abs_offset = Math.abs(offset)
+          return abs_offset < threshold
+
+        stop: (event, ui) ->
+          offset = ui.offset.left
+          abs_offset = Math.abs(offset)
+          if  abs_offset < threshold
+          else
+            $(element).draggable( "destroy" )
+            if offset < 0
+              handler('left', element)
+            else
+              $(element).css('left', 'auto').css('right', - offset)
+              handler('right', element)
+      )
+  {
+    link: link
+  }
+)
+.directive('attachPlayBtn', () ->
+  (scope, element, attrs) ->
+    #remove play button if ios
+    if(navigator.userAgent.match(/(iPod|iPhone|iPad)/))
+      $(element).find('.play_btn').remove()
+    else
+      $(element).find('.play_btn').bind("click touchstart", ->
+        play_trailer(element, scope.movies[0])
+      )
+)
+
+
+angular.module('vident', ['swipes'])
+.controller('casting_call', ($scope, $timeout, $sce) ->
+  $scope.trustSrc = (src) ->
+    return $sce.trustAsResourceUrl(src)
+
+  get_movie_from_el = (el) ->
+    idx = $(el).data('index')
+    movie = $scope.movies[idx]
+
+  exit = (element, direction) ->
+    movie = get_movie_from_el(element)
+
+    return $.when(null) if movie == undefined
+    el = element
+    css = {}
+    css[direction] = "-=#{window.innerWidth}px"
+    $( el ).animate(css, "fast" ).promise()
+    .then( ->
+      nm = $scope.movies.filter (m) -> m != movie
+      $scope.movies = nm
+      $scope.$apply()
+    )
+    .then( ->
+      movie
+    )
+
+  
+  #FUNCTIONS
+  like = (el) ->
+    return if block 
+    block = true
+    exit(el, 'left')
+    .then( (movie) ->
+      console.log 'like'
+      $scope.liked = [movie].concat( $scope.liked || [])
+      $scope.$apply()
+      $.post('/event', {action: 'like', movie: movie.id})
+    )
+    .always(-> block = false)
+
+  hate = (el) ->
+    return if block 
+    block = true
+    exit(el, 'right')
+    .then( (movie) ->
+      console.log 'hate'
+      $.post('/event', {action: 'hate', movie: movie.id})
+    )
+    .always(-> block = false)
+
+  duno = (el) ->
+    return if block 
+    block = true
+    exit(el,'top')
+    .then( (movie) -> 
+      console.log 'duno'
+      $.post('/event', {action: 'duno', movie: movie.id})
+    )
+    .always(-> block = false)
+
+  save = (el) -> 
+    return if block 
+    block = true
+    exit(el,'top')
+    .then( (movie) -> 
+      console.log 'save'
+      $scope.saved = [movie].concat( $scope.saved || [])
+      $scope.$apply()
+      $.post('/event', {action: 'save', movie: movie.id})
+    )
+    .always(-> block = false)
+
+  #HANDLERS
+  leftArrow = 37
+  upArrow = 38
+  rightArrow = 39
+  downArrow = 40
+  space = 32
+
+  $scope.touchSwipeHandler = (direction, el) ->
+    switch direction
+      when 'left' then like(el)
+      when 'right' then hate(el)
+      when 'up' then duno(el)
+
+  $(document).keydown (e) ->
+    element = $("#movie_0")
+    movie = get_movie_from_el(element)
+    return if element.length == 0
+    switch e.which
+      when leftArrow then like(element)
+      when rightArrow then hate(element)
+      when upArrow then duno(element)
+      when space then play_trailer(element, movie)
+    e.preventDefault() if e.which in [leftArrow, rightArrow, upArrow, downArrow, space]
+
+  $('.like_btn').click( -> 
+    element = $("#movie_0")
+    return if element.length == 0
+    like(element)
+  )
+
+  $('.hate_btn').click( -> 
+    element = $("#movie_0")
+    return if element.length == 0
+    hate(element)
+  )
+
+  $('.duno_btn').click( -> 
+    element = $("#movie_0")
+    return if element.length == 0
+    duno(element)
+  )
+
+  $('.save_btn').click( -> 
+    element = $("#movie_0")
+    return if element.length == 0
+    save(element)
+  )
+
+  $scope.$watch('movies', (new_value, old_value) ->
+    if new_value.length == 0 || new_value.length < old_value.length #if it is removing something
+      if new_value.length < 7
+        $scope.repopulate()
+  )
+
+  # yellow orange red
+  $scope.movies = [];
+  seen = [];
+
+  redo_amazon_url = (movie) ->
+    movie.amazon_url = decodeURIComponent(movie.amazon_url) if movie.amazon_url
+    movie
+
+  repopulating = false
+  $scope.repopulate = ->
+    return if repopulating
+    repopulating = true
+    $.get('/recommendations').then( (ret) ->
+      if ret.config.signed_in
+        $('.signin').hide()
+
+      movies = ret.recommendations
+      movies = movies.map(redo_amazon_url)
+
+      movie_ids = $scope.movies.map((m) -> m.id)
+      for movie in movies
+        if movie.id not in seen
+          seen.push movie.id
+          $scope.movies.push movie 
+      $scope.$apply()
+      repopulating = false
+
+    )
+    $timeout -> $scope.$apply()
+
+  #$scope.liked = []
+  #$scope.saved = []
+
+  $.get('/liked')
+  .then( (data) ->
+    movies = data.map(redo_amazon_url)
+    $scope.liked = ($scope.liked || []).concat(movies)
+
+    $scope.$apply()
+  )
+
+  $.get('/saved')
+  .then( (data) ->
+    movies = data.map(redo_amazon_url)
+    $scope.saved = ($scope.saved || []).concat(movies)
+    $scope.$apply()
+  )
+
+  #THE OPENING
+  opened = false
+  lock_opened = false
+
+  open = ->
+    console.log 'open'
+    
+    $('.open_btn > .fa-circle').addClass('fa-inverse')
+    $('.open_btn > .fa-folder-open').removeClass('fa-inverse')
+
+    $('slick').slick(
+      slidesToShow: 6
+      slidesToScroll: 6
+    )
+    #Some workaround to make the element visible for slick to calculate sizes
+    $('.liked-saved').css('opacity', 0).promise()
+    .then( ->
+      $('.liked-saved').show()
+    )
+    .then( ->
+      $('slick').resize()
+    )
+    .then( ->
+      $( '.liked-saved' ).animate(opacity: 1)
+    )
+  close = ->
+    console.log 'close'
+    
+    $('.open_btn > .fa-circle').removeClass('fa-inverse')
+    $('.open_btn > .fa-folder-open').addClass('fa-inverse')
+
+    $( '.liked-saved' ).fadeOut(200).promise()
+    .then( ->
+      $('slick').unslick()
+    )
+  
+
+  $('.open_btn').click( ->
+    return if lock_opened
+    lock_opened = true
+    if opened
+      opened = false
+      close().then( -> lock_opened = false)
+    else
+      opened = true
+      open().then( -> lock_opened = false)
+  )
+
+)
+
+angular.element(document).ready( ->
+  angular.bootstrap(document, ['vident'])
+)
+
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-21053562-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</body>
+</html>
+
